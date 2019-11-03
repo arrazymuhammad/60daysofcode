@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Image;
 class ImageUploadController extends Controller
 {
 
@@ -20,6 +20,12 @@ class ImageUploadController extends Controller
             $destination = "assets/img/post";
             
             $filepath = $req->file('image')->storeAs($destination, $image_name);
+
+            $img = Image::make($filepath);
+            $img->resize(1000,1000,  function($constraint){
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })->save($destination."/".$image_name, 60);
 
             return $filepath;
         }
